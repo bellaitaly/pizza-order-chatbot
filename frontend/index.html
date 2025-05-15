@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pizza Order Chatbot</title>
+</head>
+<body>
+  <h1>Pizza OrderBot</h1>
+  <div id="chatbox" style="width: 600px; margin-bottom: 10px;"></div>
+  <input id="userInput" placeholder="Type here..." style="width: 500px;" />
+  <button onclick="sendMessage()">Send</button>
+
+  <script>
+    const chatbox = document.getElementById("chatbox");
+    const userInput = document.getElementById("userInput");
+
+    function sendMessage() {
+      const text = userInput.value;
+      if (!text.trim()) return;
+
+      chatbox.innerHTML += `<p><strong>You:</strong> ${text}</p>`;
+      userInput.value = "";
+
+      fetch("http://127.0.0.1:5000/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text })
+      })
+      .then(response => response.json())
+      .then(data => {
+        chatbox.innerHTML += `<p><strong>OrderBot:</strong> ${data.response}</p>`;
+        chatbox.scrollTop = chatbox.scrollHeight;
+      });
+    }
+  </script>
+</body>
+</html>
